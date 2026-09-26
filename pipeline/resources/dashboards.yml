@@ -1,0 +1,6 @@
+resources:
+  dashboards:
+    pipeline_tcc_indicadores:
+      display_name: "Pipeline TCC - Indicadores de Transicao"
+      file_path: ../dashboards/pipeline_tcc_indicadores.lvdash.json
+      warehouse_id: 5937853489eb21c0

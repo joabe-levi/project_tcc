@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: prata_avaliacoes
+    description: Grao = avaliacao (1 linha por formulario preenchido).
+    columns:
+      - name: id_formulario
+        tests:
+          - unique
+          - not_null
+      - name: id_internacao
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('prata_internacoes')
+                field: id_internacao
+      - name: estado_atual
+        tests:
+          - accepted_values:
+              arguments:
+                values: ["UTI", "Semi-UTI", "Enfermaria", "Home Care"]
+      - name: direcao_transicao
+        tests:
+          - accepted_values:
+              arguments:
+                values: ["Manter", "Desescalonar", "Escalonar"]
+
+  - name: prata_internacoes
+    description: Grao = internacao (rollup das avaliacoes).
+    columns:
+      - name: id_internacao
+        tests:
+          - unique
+          - not_null
