@@ -1,8 +1,9 @@
-import json
 import uuid
 from datetime import datetime, timezone
 
 import streamlit as st
+
+from project_tcc.services.storage import salvar_json_no_volume
 
 
 def aplicar_estilos():
@@ -769,26 +770,28 @@ if enviar:
             "observacoes": observacoes.strip(),
         }
 
-        st.success(
-            "Avaliação registrada com sucesso."
-        )
-
-        st.subheader("JSON gerado")
-
-        st.json(registro)
-
         nome_arquivo = (
             f"{data_avaliacao[:10]}_"
             f"{id_formulario}.json"
         )
 
-        st.download_button(
-            label="Baixar JSON",
-            data=json.dumps(
+        try:
+            caminho_arquivo = salvar_json_no_volume(
                 registro,
-                indent=2,
-                ensure_ascii=False,
-            ),
-            file_name=nome_arquivo,
-            mime="application/json",
-        )
+                nome_arquivo,
+            )
+        except Exception as exc:
+            st.error(
+                "Não foi possível salvar a avaliação no volume."
+            )
+            st.exception(exc)
+        else:
+            st.success(
+                "Avaliação registrada e salva com sucesso."
+            )
+            st.caption(
+                f"Arquivo salvo em: {caminho_arquivo}"
+            )
+
+        st.subheader("JSON gerado")
+        st.json(registro)
