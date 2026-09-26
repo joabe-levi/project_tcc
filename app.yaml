@@ -1,4 +1,8 @@
 command:
   - streamlit
   - run
-  - app.py
+  - apps/formulario_transicao/app.py
+
+env:
+  - name: FORMULARIOS_VOLUME
+    valueFrom: formularios_volume
