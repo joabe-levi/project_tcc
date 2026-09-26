@@ -1,0 +1,22 @@
+[project]
+name = "project-tcc"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Joabe Levi", email = "joabe-levi@hotmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "databricks-sdk>=0.142.0",
+    "databricks-sql-connector>=4.6.0",
+    "pandas>=3.0.6",
+    "streamlit>=1.64.0",
+]
+
+[project.scripts]
+project-tcc = "project_tcc:main"
+
+[build-system]
+requires = ["uv_build>=0.12.7,<0.13.0"]
+build-backend = "uv_build"
