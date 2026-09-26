@@ -659,7 +659,7 @@ requires-dist = [
     { name = "databricks-sdk", specifier = ">=0.142.0" },
     { name = "databricks-sql-connector", specifier = ">=4.6.0" },
     { name = "pandas", specifier = ">=3.0.6" },
-    { name = "streamlit", specifier = ">=1.64.0" },
+    { name = "streamlit", specifier = "==1.64.0" },
 ]
 
 [[package]]

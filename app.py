@@ -69,17 +69,6 @@ def aplicar_estilos():
             font-size: 0.96rem;
         }
 
-        [data-testid="stVerticalBlockBorderWrapper"] {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.14);
-        }
-
-        [data-testid="stVerticalBlockBorderWrapper"] > div {
-            padding: 1.35rem 1.5rem;
-        }
-
         .section-heading {
             margin-bottom: 0.35rem;
         }
@@ -164,10 +153,6 @@ def aplicar_estilos():
             color: #93c5fd;
         }
 
-        .alert-section [data-testid="stVerticalBlockBorderWrapper"] {
-            border-color: #554631;
-        }
-
         .alert-note {
             padding: 0.7rem 0.85rem;
             border: 1px solid rgba(180, 139, 69, 0.35);
@@ -239,10 +224,6 @@ def aplicar_estilos():
 
             .page-header h1 {
                 font-size: 1.45rem;
-            }
-
-            [data-testid="stVerticalBlockBorderWrapper"] > div {
-                padding: 1rem;
             }
 
             .criterion-question {
