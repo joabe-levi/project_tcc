@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: bronze
+    database: pipeline_tcc
+    schema: bronze
+    tables:
+      - name: formularios
+        description: >
+          Tabela Delta alimentada pelo Auto Loader (src/ingest_bronze.py) a
+          partir do volume pipeline_tcc.ingestao.formularios_json. 1:1 com o
+          JSON bruto, sem tratamento.
+        columns:
+          - name: id_formulario
+            description: UUID do formulario (chave natural do JSON bruto)

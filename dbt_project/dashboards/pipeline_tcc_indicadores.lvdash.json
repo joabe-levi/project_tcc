@@ -1,0 +1,946 @@
+{
+  "datasets": [
+    {
+      "name": "ds_kpis",
+      "displayName": "KPIs gerais",
+      "queryLines": [
+        "SELECT\n",
+        "  count(*) as total_avaliacoes,\n",
+        "  round(avg(case when flag_concordancia then 1.0 else 0.0 end) * 100, 1) as pct_concordancia,\n",
+        "  round(avg(pontuacao_seguranca), 2) as pontuacao_media,\n",
+        "  round(avg(case when transicao_efetivada_real then 1.0 else 0.0 end) * 100, 1) as pct_efetivacao\n",
+        "FROM pipeline_tcc.ouro.mart_transicoes\n"
+      ]
+    },
+    {
+      "name": "ds_hospital",
+      "displayName": "Operacional por hospital",
+      "queryLines": [
+        "SELECT * FROM pipeline_tcc.ouro.mart_operacional_hospital ORDER BY hospital\n"
+      ]
+    },
+    {
+      "name": "ds_profissional",
+      "displayName": "Operacional por profissional",
+      "queryLines": [
+        "SELECT * FROM pipeline_tcc.ouro.mart_operacional_profissional ORDER BY nome_profissional\n"
+      ]
+    },
+    {
+      "name": "ds_direcao",
+      "displayName": "Distribuicao por direcao",
+      "queryLines": [
+        "SELECT direcao_transicao, count(*) as total FROM pipeline_tcc.ouro.mart_transicoes GROUP BY direcao_transicao\n"
+      ]
+    },
+    {
+      "name": "ds_transicoes",
+      "displayName": "Transicoes (detalhe)",
+      "queryLines": [
+        "SELECT hospital, nome_profissional, data_avaliacao, estado_atual, direcao_transicao, direcao_recomendada_calculada, flag_concordancia, transicao_efetivada_real, pontuacao_seguranca FROM pipeline_tcc.ouro.mart_transicoes ORDER BY data_avaliacao\n"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "page_overview",
+      "displayName": "Visao Geral",
+      "layout": [
+        {
+          "widget": {
+            "name": "kpi_total",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_kpis",
+                  "fields": [
+                    {
+                      "name": "total_avaliacoes",
+                      "expression": "`total_avaliacoes`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "total_avaliacoes",
+                  "displayName": "Total de avaliacoes"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 2,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_concordancia",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_kpis",
+                  "fields": [
+                    {
+                      "name": "pct_concordancia",
+                      "expression": "`pct_concordancia`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "pct_concordancia",
+                  "displayName": "% concordancia (indicador vs decisao real)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 0,
+            "width": 2,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_pontuacao",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_kpis",
+                  "fields": [
+                    {
+                      "name": "pontuacao_media",
+                      "expression": "`pontuacao_media`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "pontuacao_media",
+                  "displayName": "Pontuacao de seguranca media"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 2,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_efetivacao",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_kpis",
+                  "fields": [
+                    {
+                      "name": "pct_efetivacao",
+                      "expression": "`pct_efetivacao`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "pct_efetivacao",
+                  "displayName": "% transicao efetivada na proxima avaliacao"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 2,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_avaliacoes_hospital",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_hospital",
+                  "fields": [
+                    {
+                      "name": "hospital",
+                      "expression": "`hospital`"
+                    },
+                    {
+                      "name": "total_avaliacoes",
+                      "expression": "`total_avaliacoes`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "hospital",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Hospital"
+                },
+                "y": {
+                  "fieldName": "total_avaliacoes",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Total de avaliacoes"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Avaliacoes por hospital"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_direcao",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_direcao",
+                  "fields": [
+                    {
+                      "name": "direcao_transicao",
+                      "expression": "`direcao_transicao`"
+                    },
+                    {
+                      "name": "total",
+                      "expression": "`total`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "direcao_transicao",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Direcao"
+                },
+                "y": {
+                  "fieldName": "total",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Total"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Distribuicao por direcao de transicao"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 4,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_concordancia_hospital",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_hospital",
+                  "fields": [
+                    {
+                      "name": "hospital",
+                      "expression": "`hospital`"
+                    },
+                    {
+                      "name": "pct_concordancia",
+                      "expression": "`pct_concordancia`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "hospital",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Hospital"
+                },
+                "y": {
+                  "fieldName": "pct_concordancia",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "% concordancia"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "% concordancia por hospital"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_concordancia_profissional",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_profissional",
+                  "fields": [
+                    {
+                      "name": "nome_profissional",
+                      "expression": "`nome_profissional`"
+                    },
+                    {
+                      "name": "pct_concordancia",
+                      "expression": "`pct_concordancia`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "nome_profissional",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Profissional"
+                },
+                "y": {
+                  "fieldName": "pct_concordancia",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "% concordancia"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "% concordancia por profissional"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 10,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "table_hospital",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_hospital",
+                  "fields": [
+                    {
+                      "name": "hospital",
+                      "expression": "`hospital`"
+                    },
+                    {
+                      "name": "total_avaliacoes",
+                      "expression": "`total_avaliacoes`"
+                    },
+                    {
+                      "name": "pct_concordancia",
+                      "expression": "`pct_concordancia`"
+                    },
+                    {
+                      "name": "pontuacao_media",
+                      "expression": "`pontuacao_media`"
+                    },
+                    {
+                      "name": "horas_medias_ate_proxima_avaliacao",
+                      "expression": "`horas_medias_ate_proxima_avaliacao`"
+                    },
+                    {
+                      "name": "total_manter",
+                      "expression": "`total_manter`"
+                    },
+                    {
+                      "name": "total_desescalonar",
+                      "expression": "`total_desescalonar`"
+                    },
+                    {
+                      "name": "total_escalonar",
+                      "expression": "`total_escalonar`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "hospital",
+                    "type": "string",
+                    "displayAs": "string",
+                    "title": "Hospital",
+                    "order": 0,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "total_avaliacoes",
+                    "type": "integer",
+                    "displayAs": "integer",
+                    "title": "Total avaliacoes",
+                    "order": 1,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "pct_concordancia",
+                    "type": "float",
+                    "displayAs": "float",
+                    "title": "% concordancia",
+                    "order": 2,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "pontuacao_media",
+                    "type": "float",
+                    "displayAs": "float",
+                    "title": "Pontuacao media",
+                    "order": 3,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "horas_medias_ate_proxima_avaliacao",
+                    "type": "float",
+                    "displayAs": "float",
+                    "title": "Horas medias ate proxima avaliacao",
+                    "order": 4,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "total_manter",
+                    "type": "integer",
+                    "displayAs": "integer",
+                    "title": "Manter",
+                    "order": 5,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "total_desescalonar",
+                    "type": "integer",
+                    "displayAs": "integer",
+                    "title": "Desescalonar",
+                    "order": 6,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "total_escalonar",
+                    "type": "integer",
+                    "displayAs": "integer",
+                    "title": "Escalonar",
+                    "order": 7,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Detalhe por hospital"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 16,
+            "width": 8,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "table_profissional",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_profissional",
+                  "fields": [
+                    {
+                      "name": "nome_profissional",
+                      "expression": "`nome_profissional`"
+                    },
+                    {
+                      "name": "total_avaliacoes",
+                      "expression": "`total_avaliacoes`"
+                    },
+                    {
+                      "name": "pct_concordancia",
+                      "expression": "`pct_concordancia`"
+                    },
+                    {
+                      "name": "pontuacao_media",
+                      "expression": "`pontuacao_media`"
+                    },
+                    {
+                      "name": "total_manter",
+                      "expression": "`total_manter`"
+                    },
+                    {
+                      "name": "total_desescalonar",
+                      "expression": "`total_desescalonar`"
+                    },
+                    {
+                      "name": "total_escalonar",
+                      "expression": "`total_escalonar`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "nome_profissional",
+                    "type": "string",
+                    "displayAs": "string",
+                    "title": "Profissional",
+                    "order": 0,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "total_avaliacoes",
+                    "type": "integer",
+                    "displayAs": "integer",
+                    "title": "Total avaliacoes",
+                    "order": 1,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "pct_concordancia",
+                    "type": "float",
+                    "displayAs": "float",
+                    "title": "% concordancia",
+                    "order": 2,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "pontuacao_media",
+                    "type": "float",
+                    "displayAs": "float",
+                    "title": "Pontuacao media",
+                    "order": 3,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "total_manter",
+                    "type": "integer",
+                    "displayAs": "integer",
+                    "title": "Manter",
+                    "order": 4,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "total_desescalonar",
+                    "type": "integer",
+                    "displayAs": "integer",
+                    "title": "Desescalonar",
+                    "order": 5,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "total_escalonar",
+                    "type": "integer",
+                    "displayAs": "integer",
+                    "title": "Escalonar",
+                    "order": 6,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Detalhe por profissional"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 22,
+            "width": 8,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "table_transicoes",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_transicoes",
+                  "fields": [
+                    {
+                      "name": "hospital",
+                      "expression": "`hospital`"
+                    },
+                    {
+                      "name": "nome_profissional",
+                      "expression": "`nome_profissional`"
+                    },
+                    {
+                      "name": "data_avaliacao",
+                      "expression": "`data_avaliacao`"
+                    },
+                    {
+                      "name": "estado_atual",
+                      "expression": "`estado_atual`"
+                    },
+                    {
+                      "name": "direcao_transicao",
+                      "expression": "`direcao_transicao`"
+                    },
+                    {
+                      "name": "direcao_recomendada_calculada",
+                      "expression": "`direcao_recomendada_calculada`"
+                    },
+                    {
+                      "name": "flag_concordancia",
+                      "expression": "`flag_concordancia`"
+                    },
+                    {
+                      "name": "transicao_efetivada_real",
+                      "expression": "`transicao_efetivada_real`"
+                    },
+                    {
+                      "name": "pontuacao_seguranca",
+                      "expression": "`pontuacao_seguranca`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "hospital",
+                    "type": "string",
+                    "displayAs": "string",
+                    "title": "Hospital",
+                    "order": 0,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "nome_profissional",
+                    "type": "string",
+                    "displayAs": "string",
+                    "title": "Profissional",
+                    "order": 1,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "data_avaliacao",
+                    "type": "datetime",
+                    "displayAs": "datetime",
+                    "title": "Data",
+                    "order": 2,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "estado_atual",
+                    "type": "string",
+                    "displayAs": "string",
+                    "title": "Estado atual",
+                    "order": 3,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "direcao_transicao",
+                    "type": "string",
+                    "displayAs": "string",
+                    "title": "Decisao real",
+                    "order": 4,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "direcao_recomendada_calculada",
+                    "type": "string",
+                    "displayAs": "string",
+                    "title": "Indicador calculado",
+                    "order": 5,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "flag_concordancia",
+                    "type": "boolean",
+                    "displayAs": "boolean",
+                    "title": "Concordou?",
+                    "order": 6,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "transicao_efetivada_real",
+                    "type": "boolean",
+                    "displayAs": "boolean",
+                    "title": "Efetivou na proxima?",
+                    "order": 7,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "pontuacao_seguranca",
+                    "type": "integer",
+                    "displayAs": "integer",
+                    "title": "Pontuacao",
+                    "order": 8,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Transicoes - detalhe (mart_transicoes)"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 28,
+            "width": 8,
+            "height": 8
+          }
+        }
+      ]
+    }
+  ]
+}
