@@ -17,6 +17,7 @@ jobs:
 
       - name: Validar bundle
         run: databricks bundle validate -t dev
+        working-directory: pipeline
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
@@ -33,6 +34,7 @@ jobs:
 
       - name: Deploy do bundle
         run: databricks bundle deploy -t dev
+        working-directory: pipeline
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
