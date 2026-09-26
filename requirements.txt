@@ -1,4 +1,0 @@
-streamlit==1.64.0
-databricks-sdk
-databricks-sql-connector
-pandas

@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 import streamlit as st
 
-from project_tcc.services.storage import salvar_json_no_volume
+from storage import salvar_json_no_volume
 
 
 def aplicar_estilos():

@@ -1,5 +1,4 @@
-import json
-import os
+import json, os
 
 
 def salvar_json_no_volume(
