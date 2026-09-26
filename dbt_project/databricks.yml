@@ -1,0 +1,12 @@
+bundle:
+  name: pipeline_tcc
+
+include:
+  - resources/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://dbc-24e63c87-e011.cloud.databricks.com

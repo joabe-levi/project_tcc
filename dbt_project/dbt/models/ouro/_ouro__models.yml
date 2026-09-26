@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: mart_transicoes
+    description: >
+      Indicador central do TCC: compara a direcao de transicao decidida pelo
+      profissional com a direcao que os criterios/pontuacao recomendariam.
+      Grao = avaliacao.
+    columns:
+      - name: id_formulario
+        tests:
+          - unique
+          - not_null
+      - name: direcao_recomendada_calculada
+        tests:
+          - accepted_values:
+              arguments:
+                values: ["Manter", "Desescalonar", "Escalonar"]
+
+  - name: mart_operacional_hospital
+    description: Agregados por hospital. Grao = hospital.
+    columns:
+      - name: hospital
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_operacional_profissional
+    description: Agregados por profissional. Grao = profissional.
+    columns:
+      - name: id_profissional
+        tests:
+          - unique
+          - not_null
