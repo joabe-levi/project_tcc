@@ -9,7 +9,9 @@
 
 with stg as (
 
-    select * from {{ ref('stg_formularios') }}
+    -- so segue registro que passou na camada de qualidade (ver models/qualidade)
+    select * from {{ ref('formularios_validados') }}
+    where registro_valido
 
 ),
 
