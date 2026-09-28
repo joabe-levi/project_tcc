@@ -1,0 +1,51 @@
+version: 2
+
+models:
+  - name: formularios_validados
+    description: >
+      Aplica 9 regras de validacao a cada formulario vindo do staging.
+      registro_valido = true so quando todas as regras passam; e a partir
+      daqui que intermediate/prata/ouro filtram o que segue no pipeline.
+    columns:
+      - name: id_formulario
+        tests:
+          - not_null
+      - name: registro_valido
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+
+  - name: quarentena_formularios
+    description: >
+      Registros que falharam em pelo menos uma regra de validacao. Nao
+      seguem para o restante do pipeline; ficam isolados aqui com o motivo
+      da rejeicao, para inspecao/correcao manual.
+    columns:
+      - name: id_formulario
+        tests:
+          - not_null
+      - name: motivos_rejeicao
+        tests:
+          - not_null
+
+  - name: relatorio_qualidade_resumo
+    description: >
+      Relatorio de qualidade (resumo): totais de registros processados,
+      validos e rejeitados na ultima execucao do pipeline, e o percentual
+      de qualidade.
+    columns:
+      - name: total_processados
+        tests:
+          - not_null
+
+  - name: relatorio_qualidade_por_regra
+    description: >
+      Relatorio de qualidade (detalhado): quantos registros falharam em
+      cada uma das 9 regras de validacao. Grao = regra.
+    columns:
+      - name: regra
+        tests:
+          - unique
+          - not_null

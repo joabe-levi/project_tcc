@@ -82,4 +82,8 @@ pipeline/
 
 ## Time
 
-Jeander, Joabe e Lianderson.
+| Integrante | Matrícula |
+|---|---|
+| Jeander Trevia | 2519758 |
+| Joabe Levi | 2518430 |
+| Lianderson Falcão | 2518671 |
