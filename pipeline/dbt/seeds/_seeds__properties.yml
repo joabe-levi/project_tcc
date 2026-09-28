@@ -1,0 +1,19 @@
+version: 2
+
+seeds:
+  - name: seed_custo_diario_leito
+    description: >
+      Custo diario de referencia por nivel de cuidado (estimativa, valores
+      fictícios para fins de calculo de indicador de economia -- nao reflete
+      tabela de precos real de nenhum hospital ou operadora).
+    columns:
+      - name: estado
+        tests:
+          - unique
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["UTI", "Semi-UTI", "Enfermaria", "Home Care"]
+      - name: custo_diario_brl
+        tests:
+          - not_null
