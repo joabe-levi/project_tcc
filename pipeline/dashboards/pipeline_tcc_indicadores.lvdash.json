@@ -63,6 +63,27 @@
       "queryLines": [
         "SELECT * FROM pipeline_tcc.ouro.mart_adocao_produto ORDER BY mes\n"
       ]
+    },
+    {
+      "name": "ds_qualidade_resumo",
+      "displayName": "Qualidade - resumo",
+      "queryLines": [
+        "SELECT total_processados, total_validos, total_rejeitados, pct_qualidade FROM pipeline_tcc.qualidade.relatorio_qualidade_resumo\n"
+      ]
+    },
+    {
+      "name": "ds_qualidade_por_regra",
+      "displayName": "Qualidade por regra",
+      "queryLines": [
+        "SELECT regra, descricao, total_falhas FROM pipeline_tcc.qualidade.relatorio_qualidade_por_regra ORDER BY total_falhas DESC\n"
+      ]
+    },
+    {
+      "name": "ds_quarentena",
+      "displayName": "Quarentena",
+      "queryLines": [
+        "SELECT id_formulario, hospital, data_avaliacao, estado_atual, direcao_transicao, pontuacao_seguranca, motivos_rejeicao, quarentena_em FROM pipeline_tcc.qualidade.quarentena_formularios ORDER BY quarentena_em DESC\n"
+      ]
     }
   ],
   "pages": [
@@ -1394,6 +1415,388 @@
           "position": {
             "x": 0,
             "y": 16,
+            "width": 8,
+            "height": 6
+          }
+        }
+      ]
+    },
+    {
+      "name": "page_qualidade",
+      "displayName": "Qualidade de Dados",
+      "layout": [
+        {
+          "widget": {
+            "name": "kpi_total_processados",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_qualidade_resumo",
+                  "fields": [
+                    {
+                      "name": "total_processados",
+                      "expression": "`total_processados`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "total_processados",
+                  "displayName": "Total processados"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 2,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_total_validos",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_qualidade_resumo",
+                  "fields": [
+                    {
+                      "name": "total_validos",
+                      "expression": "`total_validos`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "total_validos",
+                  "displayName": "Validos"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 0,
+            "width": 2,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_total_rejeitados",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_qualidade_resumo",
+                  "fields": [
+                    {
+                      "name": "total_rejeitados",
+                      "expression": "`total_rejeitados`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "total_rejeitados",
+                  "displayName": "Rejeitados (quarentena)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 2,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_pct_qualidade",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_qualidade_resumo",
+                  "fields": [
+                    {
+                      "name": "pct_qualidade",
+                      "expression": "`pct_qualidade`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "pct_qualidade",
+                  "displayName": "% de qualidade"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 2,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_falhas_por_regra",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_qualidade_por_regra",
+                  "fields": [
+                    {
+                      "name": "regra",
+                      "expression": "`regra`"
+                    },
+                    {
+                      "name": "total_falhas",
+                      "expression": "`total_falhas`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "regra",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Regra"
+                },
+                "y": {
+                  "fieldName": "total_falhas",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Falhas"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Falhas por regra de validacao"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 8,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "table_quarentena",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_quarentena",
+                  "fields": [
+                    {
+                      "name": "id_formulario",
+                      "expression": "`id_formulario`"
+                    },
+                    {
+                      "name": "hospital",
+                      "expression": "`hospital`"
+                    },
+                    {
+                      "name": "data_avaliacao",
+                      "expression": "`data_avaliacao`"
+                    },
+                    {
+                      "name": "estado_atual",
+                      "expression": "`estado_atual`"
+                    },
+                    {
+                      "name": "direcao_transicao",
+                      "expression": "`direcao_transicao`"
+                    },
+                    {
+                      "name": "pontuacao_seguranca",
+                      "expression": "`pontuacao_seguranca`"
+                    },
+                    {
+                      "name": "motivos_rejeicao",
+                      "expression": "`motivos_rejeicao`"
+                    },
+                    {
+                      "name": "quarentena_em",
+                      "expression": "`quarentena_em`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "id_formulario",
+                    "type": "string",
+                    "displayAs": "string",
+                    "title": "ID formulario",
+                    "order": 0,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "hospital",
+                    "type": "string",
+                    "displayAs": "string",
+                    "title": "Hospital",
+                    "order": 1,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "data_avaliacao",
+                    "type": "datetime",
+                    "displayAs": "datetime",
+                    "title": "Data avaliacao",
+                    "order": 2,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "estado_atual",
+                    "type": "string",
+                    "displayAs": "string",
+                    "title": "Estado atual",
+                    "order": 3,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "direcao_transicao",
+                    "type": "string",
+                    "displayAs": "string",
+                    "title": "Direcao",
+                    "order": 4,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "pontuacao_seguranca",
+                    "type": "integer",
+                    "displayAs": "integer",
+                    "title": "Pontuacao",
+                    "order": 5,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "motivos_rejeicao",
+                    "type": "string",
+                    "displayAs": "string",
+                    "title": "Motivo da rejeicao",
+                    "order": 6,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "quarentena_em",
+                    "type": "datetime",
+                    "displayAs": "datetime",
+                    "title": "Quarentena em",
+                    "order": 7,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Registros em quarentena"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
             "width": 8,
             "height": 6
           }

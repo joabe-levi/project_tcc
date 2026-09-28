@@ -18,6 +18,9 @@ models:
     staging:
       +materialized: view
       +schema: bronze
+    qualidade:
+      +materialized: table
+      +schema: qualidade
     intermediate:
       +materialized: view
       +schema: prata
