@@ -39,6 +39,30 @@
       "queryLines": [
         "SELECT hospital, nome_profissional, data_avaliacao, estado_atual, direcao_transicao, direcao_recomendada_calculada, flag_concordancia, transicao_efetivada_real, pontuacao_seguranca FROM pipeline_tcc.ouro.mart_transicoes ORDER BY data_avaliacao\n"
       ]
+    },
+    {
+      "name": "ds_economia_kpis",
+      "displayName": "Economia - KPIs",
+      "queryLines": [
+        "SELECT\n",
+        "  round(sum(economia_total_estimada_brl), 2) as economia_total_brl,\n",
+        "  sum(total_desescalonamentos_efetivados) as total_desescalonamentos\n",
+        "FROM pipeline_tcc.ouro.mart_economia_hospital\n"
+      ]
+    },
+    {
+      "name": "ds_economia_hospital",
+      "displayName": "Economia por hospital",
+      "queryLines": [
+        "SELECT * FROM pipeline_tcc.ouro.mart_economia_hospital ORDER BY hospital\n"
+      ]
+    },
+    {
+      "name": "ds_adocao_produto",
+      "displayName": "Adocao do produto por mes",
+      "queryLines": [
+        "SELECT * FROM pipeline_tcc.ouro.mart_adocao_produto ORDER BY mes\n"
+      ]
     }
   ],
   "pages": [
@@ -938,6 +962,440 @@
             "y": 28,
             "width": 8,
             "height": 8
+          }
+        }
+      ]
+    },
+    {
+      "name": "page_economia_produto",
+      "displayName": "Economia & Produto",
+      "layout": [
+        {
+          "widget": {
+            "name": "kpi_economia_total",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_economia_kpis",
+                  "fields": [
+                    {
+                      "name": "economia_total_brl",
+                      "expression": "`economia_total_brl`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "economia_total_brl",
+                  "displayName": "Economia total estimada (R$)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_total_desescalonamentos",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_economia_kpis",
+                  "fields": [
+                    {
+                      "name": "total_desescalonamentos",
+                      "expression": "`total_desescalonamentos`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "total_desescalonamentos",
+                  "displayName": "Desescalonamentos efetivados"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 3,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_economia_hospital",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_economia_hospital",
+                  "fields": [
+                    {
+                      "name": "hospital",
+                      "expression": "`hospital`"
+                    },
+                    {
+                      "name": "economia_total_estimada_brl",
+                      "expression": "`economia_total_estimada_brl`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "hospital",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Hospital"
+                },
+                "y": {
+                  "fieldName": "economia_total_estimada_brl",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Economia estimada (R$)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Economia estimada por hospital"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_adocao_mensal",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_adocao_produto",
+                  "fields": [
+                    {
+                      "name": "mes",
+                      "expression": "`mes`"
+                    },
+                    {
+                      "name": "total_avaliacoes",
+                      "expression": "`total_avaliacoes`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "mes",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Mes"
+                },
+                "y": {
+                  "fieldName": "total_avaliacoes",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Total de avaliacoes"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Adocao do produto - avaliacoes por mes"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 4,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "table_economia_hospital",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_economia_hospital",
+                  "fields": [
+                    {
+                      "name": "hospital",
+                      "expression": "`hospital`"
+                    },
+                    {
+                      "name": "total_avaliacoes",
+                      "expression": "`total_avaliacoes`"
+                    },
+                    {
+                      "name": "total_desescalonamentos_efetivados",
+                      "expression": "`total_desescalonamentos_efetivados`"
+                    },
+                    {
+                      "name": "economia_total_estimada_brl",
+                      "expression": "`economia_total_estimada_brl`"
+                    },
+                    {
+                      "name": "economia_media_por_desescalonamento_brl",
+                      "expression": "`economia_media_por_desescalonamento_brl`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "hospital",
+                    "type": "string",
+                    "displayAs": "string",
+                    "title": "Hospital",
+                    "order": 0,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "left",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "total_avaliacoes",
+                    "type": "integer",
+                    "displayAs": "integer",
+                    "title": "Total avaliacoes",
+                    "order": 1,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "total_desescalonamentos_efetivados",
+                    "type": "integer",
+                    "displayAs": "integer",
+                    "title": "Desescalonamentos efetivados",
+                    "order": 2,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "economia_total_estimada_brl",
+                    "type": "float",
+                    "displayAs": "float",
+                    "title": "Economia total (R$)",
+                    "order": 3,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "economia_media_por_desescalonamento_brl",
+                    "type": "float",
+                    "displayAs": "float",
+                    "title": "Economia media por caso (R$)",
+                    "order": 4,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Detalhe: economia por hospital"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 8,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "table_adocao_produto",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_adocao_produto",
+                  "fields": [
+                    {
+                      "name": "mes",
+                      "expression": "`mes`"
+                    },
+                    {
+                      "name": "total_avaliacoes",
+                      "expression": "`total_avaliacoes`"
+                    },
+                    {
+                      "name": "hospitais_ativos",
+                      "expression": "`hospitais_ativos`"
+                    },
+                    {
+                      "name": "profissionais_ativos",
+                      "expression": "`profissionais_ativos`"
+                    },
+                    {
+                      "name": "internacoes_ativas",
+                      "expression": "`internacoes_ativas`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "mes",
+                    "type": "datetime",
+                    "displayAs": "datetime",
+                    "title": "Mes",
+                    "order": 0,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "total_avaliacoes",
+                    "type": "integer",
+                    "displayAs": "integer",
+                    "title": "Total avaliacoes",
+                    "order": 1,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "hospitais_ativos",
+                    "type": "integer",
+                    "displayAs": "integer",
+                    "title": "Hospitais ativos",
+                    "order": 2,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "profissionais_ativos",
+                    "type": "integer",
+                    "displayAs": "integer",
+                    "title": "Profissionais ativos",
+                    "order": 3,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  },
+                  {
+                    "fieldName": "internacoes_ativas",
+                    "type": "integer",
+                    "displayAs": "integer",
+                    "title": "Internacoes ativas",
+                    "order": 4,
+                    "visible": true,
+                    "allowSearch": false,
+                    "alignContent": "right",
+                    "allowHTML": false,
+                    "highlightLinks": false,
+                    "useMonospaceFont": false,
+                    "preserveWhitespace": false
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Detalhe: adocao do produto por mes"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 16,
+            "width": 8,
+            "height": 6
           }
         }
       ]

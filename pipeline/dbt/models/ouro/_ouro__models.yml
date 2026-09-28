@@ -32,3 +32,35 @@ models:
         tests:
           - unique
           - not_null
+
+  - name: mart_economia_estimada
+    description: >
+      Indicador de economia de gastos: estima o valor economizado quando um
+      desescalonamento recomendado e efetivado, com base num custo diario de
+      referencia por nivel de cuidado. Grao = avaliacao.
+    columns:
+      - name: id_formulario
+        tests:
+          - unique
+          - not_null
+      - name: economia_estimada_brl
+        tests:
+          - not_null
+
+  - name: mart_economia_hospital
+    description: Economia estimada agregada por hospital. Grao = hospital.
+    columns:
+      - name: hospital
+        tests:
+          - unique
+          - not_null
+
+  - name: mart_adocao_produto
+    description: >
+      Indicador de produto (comercial): adocao/uso da ferramenta ao longo do
+      tempo. Grao = mes.
+    columns:
+      - name: mes
+        tests:
+          - unique
+          - not_null
